@@ -1,0 +1,10 @@
+version: '3'
+services:
+  app:
+    image: node
+    working_dir: /usr/local/tomacio
+    command: npm start
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/local/tomacio
