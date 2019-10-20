@@ -4,6 +4,7 @@ import Timer from "./Timer";
 import useStoredState from "./useStoredState";
 import useStoredReducer from "./useStoredReducer";
 import pomodoroReducer from "./pomodoroReducer";
+import showNotification from "./showNotification";
 import uuidv4 from "uuid/v4";
 
 function App() {
@@ -34,6 +35,10 @@ function App() {
             {...tasks[index], ...{ pomodoros: [...tasks[index].pomodoros, { uuid: pomodoro.uuid, finishTo: pomodoro.finishTo, remaining: 0 }] }},
             ...tasks.slice(index + 1)
           ]);
+
+          showNotification("El pomodoro ha acabado!");
+        } else {
+          showNotification("La pausa ha terminado!");
         }
 
         dispatch({ type: 'FINISH_POMODORO' });

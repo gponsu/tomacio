@@ -1,8 +1,8 @@
 import uuidv4 from "uuid/v4";
 
-const POMODORO_TIME = 3 * 1 * 1000;
-const REGULAR_BREAK_TIME = 5 * 1 * 1000;
-const LONG_BREAK_TIME = 15 * 1 * 1000;
+const POMODORO_TIME = 25 * 60 * 1000;
+const REGULAR_BREAK_TIME = 5 * 60 * 1000;
+const LONG_BREAK_TIME = 15 * 60 * 1000;
 const POMODORO_SET = 4;
 
 function pomodoroReducer(pomodoro, action) {
