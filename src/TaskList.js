@@ -2,7 +2,7 @@ import React from "react";
 import useStoredState from "./useStoredState";
 
 function TaskList(props) {
-	const { tasks, onRemoveTask, onStartPomodoro, onStopPomodoro } = props;
+	const { running, tasks, onRemoveTask, onStartPomodoro, onStopPomodoro } = props;
   const [taskStarted, setTaskStarted] = useStoredState("taskStarted", null);
 
 	function handleMouseDown(uuid, event) {
@@ -27,7 +27,7 @@ function TaskList(props) {
           {task.title}
           <div>
             <span style={style.badge}>{task.pomodoros.length}</span>
-            {task.uuid === taskStarted ? (
+            {(task.uuid === taskStarted) && running ? (
               <button style={style.button} onClick={() => handleStop(task.uuid)}>Stop</button>
             ) : (
               <button style={style.button} onClick={() => handleStart(task.uuid)}>Start</button>

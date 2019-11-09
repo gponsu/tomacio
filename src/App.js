@@ -74,7 +74,7 @@ function App() {
 
       <span style={divider} />
 
-      <TaskList tasks={tasks} onRemoveTask={handleRemoveTask} onStartPomodoro={handleStartPomodoro} onStopPomodoro={handleStopPomodoro}/>
+      <TaskList running={pomodoro.isRunning} tasks={tasks} onRemoveTask={handleRemoveTask} onStartPomodoro={handleStartPomodoro} onStopPomodoro={handleStopPomodoro}/>
     </div>
   );
 }
