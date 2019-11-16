@@ -16,6 +16,7 @@ function TaskList(props) {
   }
 
   function handleStart(uuid) {
+    if (running) onStopPomodoro(taskStarted);
     onStartPomodoro(uuid);
     setTaskStarted(uuid);
   }
@@ -26,7 +27,8 @@ function TaskList(props) {
         <div style={style.item} key={task.uuid} onMouseDown={event => handleMouseDown(task.uuid, event)}>
           {task.title}
           <div>
-            <span style={style.badge}>{task.pomodoros.length}</span>
+            <span style={style.badge.finished}>{task.pomodoros.filter(pomodoro => pomodoro.remaining === 0).length}</span>
+            <span style={style.badge.canceled}>{task.pomodoros.filter(pomodoro => pomodoro.remaining > 0).length}</span>
             {(task.uuid === taskStarted) && running ? (
               <button style={style.button} onClick={() => handleStop(task.uuid)}>Stop</button>
             ) : (
@@ -52,13 +54,24 @@ const style = {
 		justifyContent: "space-between"
 	},
   badge: {
-    color: "#fff",
-    fontSize: "14px",
-    fontWeight: "bold",
-    padding: ".15rem .35rem",
-    borderRadius: "50%",
-    background: "#fc6a6a",
-    marginRight: "1rem",
+    finished: {
+      color: "#fff",
+      fontSize: "14px",
+      fontWeight: "bold",
+      padding: ".15rem .35rem",
+      borderRadius: "50%",
+      background: "#88ba6a",
+      marginRight: ".25rem",
+    },
+    canceled: {
+      color: "#fff",
+      fontSize: "14px",
+      fontWeight: "bold",
+      padding: ".15rem .35rem",
+      borderRadius: "50%",
+      background: "#fc6a6a",
+      marginRight: "1rem",
+    }
   },
 	button: {
 		cursor: "pointer",
