@@ -1,5 +1,5 @@
 import React from 'react';
-import useInterval from './useInterval';
+import useInterval from '../utils/useInterval';
 
 function format(milliseconds) {
   if (!milliseconds) return "00:00";

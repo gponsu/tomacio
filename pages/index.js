@@ -1,13 +1,13 @@
-import React from 'react';
-import TaskList from "./TaskList";
-import Timer from "./Timer";
-import useStoredState from "./useStoredState";
-import useStoredReducer from "./useStoredReducer";
-import pomodoroReducer from "./pomodoroReducer";
-import showNotification from "./showNotification";
+import React, { useState, useReducer } from 'react';
+import TaskList from "../components/TaskList";
+import Timer from "../components/Timer";
+import pomodoroReducer from "../utils/pomodoroReducer";
+import useStoredState from "../utils/useStoredState";
+import useStoredReducer from "../utils/useStoredReducer";
+import showNotification from "../utils/showNotification";
 import uuidv4 from "uuid/v4";
 
-function App() {
+const Home = () => {
   const [tasks, setTasks] = useStoredState("tasks", []);
   const [pomodoro, dispatch] = useStoredReducer("pomodoro", pomodoroReducer, { count: 0 });
 
@@ -65,6 +65,7 @@ function App() {
       event.target.value = null;
     }
   }
+
   function handleRemoveTask(uuid) {
     setTasks(tasks.filter(function(task) {
       return task.uuid !== uuid;
@@ -72,31 +73,32 @@ function App() {
   }
 
   return (
-    <div style={style}>
+    <div className="home">
       <Timer running={pomodoro.isRunning} milliseconds={pomodoro.remaining} onTick={handleOnTick} />
 
       <h4>¿Qué vas a hacer hoy?</h4>
       <input onKeyUp={handleKeyUp} />
 
-      <span style={divider} />
+      <span className="divider" />
 
       <TaskList running={pomodoro.isRunning} tasks={tasks} onRemoveTask={handleRemoveTask} onStartPomodoro={handleStartPomodoro} onStopPomodoro={handleStopPomodoro}/>
+
+      <style jsx>{`
+      .home {
+        margin: 2rem auto;
+        max-width: 600px;
+        text-align: center;
+      }
+      .divider {
+        margin: 2rem auto;
+        display: block;
+        height: 1px;
+        background: #ccc;
+        width: 75px;
+      }
+    `}</style>
     </div>
   );
-}
+};
 
-const style = {
-  margin: "2rem auto",
-  maxWidth: "600px",
-  textAlign: "center"
-}
-
-const divider = {
-  margin: "2rem auto",
-  display: "block",
-  height: "1px",
-  background: "#ccc",
-  width: "75px",
-}
-
-export default App;
+export default Home;

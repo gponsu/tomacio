@@ -1,5 +1,5 @@
 import React from "react";
-import useStoredState from "./useStoredState";
+import useStoredState from "../utils/useStoredState";
 
 function TaskList(props) {
 	const { running, tasks, onRemoveTask, onStartPomodoro, onStopPomodoro } = props;

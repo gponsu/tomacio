@@ -12,12 +12,13 @@ const storage = {
 }
 
 function useStoreReducer(key, reducer, initialState, init) {
-  const storedState = storage.getItem(key) || initialState;
+  const storedState = (typeof window !== 'undefined') ? (storage.getItem(key) || initialState) : initialState;
 
   const [state, dispatch] = useReducer(reducer, storedState, init);
 
 	useEffect(() => {
-		storage.setItem(key, state);
+    if (typeof window !== 'undefined')
+		  storage.setItem(key, state);
 	}, [state, key]);
 
   return [state, dispatch];

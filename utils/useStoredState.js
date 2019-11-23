@@ -9,15 +9,16 @@ const storage = {
     }
   },
   setItem: (key, value) => localStorage.setItem(key, JSON.stringify(value))
-}
+};
 
 function useStoredState(key, initialState) {
-  const storedState = storage.getItem(key) || initialState;
+  const storedState = (typeof window !== 'undefined') ? (storage.getItem(key) || initialState) : initialState;
 
-  const [state, setState] = useState(storedState)
+  const [state, setState] = useState(storedState);
 
 	useEffect(() => {
-		storage.setItem(key, state);
+    if (typeof window !== 'undefined')
+      storage.setItem(key, state);
 	}, [state, key]);
 
   return [state, setState];
