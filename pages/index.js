@@ -72,6 +72,18 @@ const Home = () => {
     }));
   }
 
+  function handleFinishTask(taskId) {
+    const index = tasks.findIndex(function(task) {
+      return task.uuid === taskId;
+    });
+
+    setTasks([
+      ...tasks.slice(0, index),
+      {...tasks[index], status: "finished" },
+      ...tasks.slice(index + 1)
+    ]);
+  }
+
   return (
     <div className="home">
       <Timer running={pomodoro.isRunning} milliseconds={pomodoro.remaining} onTick={handleOnTick} />
@@ -81,7 +93,14 @@ const Home = () => {
 
       <span className="divider" />
 
-      <TaskList running={pomodoro.isRunning} tasks={tasks} onRemoveTask={handleRemoveTask} onStartPomodoro={handleStartPomodoro} onStopPomodoro={handleStopPomodoro}/>
+      <TaskList
+        running={pomodoro.isRunning}
+        tasks={tasks.filter(task => task.status !== "finished")}
+        onRemoveTask={handleRemoveTask}
+        onStartPomodoro={handleStartPomodoro}
+        onStopPomodoro={handleStopPomodoro}
+        onFinishTask={handleFinishTask}
+      />
 
       <style jsx>{`
       .home {
