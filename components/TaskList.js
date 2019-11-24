@@ -29,8 +29,8 @@ function TaskList(props) {
     <div className="container">
       {tasks.map(task => (
         <div className="item" key={task.uuid} onMouseDown={event => handleMouseDown(task.uuid, event)}>
-          {task.title}
-          <div>
+          <p className="title tooltip" title={task.title}>{task.title}</p>
+          <div className="footer">
             <span className="badge finished">{task.pomodoros.filter(pomodoro => pomodoro.remaining === 0).length}</span>
             <span className="badge canceled">{task.pomodoros.filter(pomodoro => pomodoro.remaining > 0).length}</span>
             {(task.uuid === taskStarted) && running ? (
@@ -54,6 +54,18 @@ function TaskList(props) {
           border: 1px solid #ccc;
           margin-bottom: 0.5rem;
           justify-content: space-between
+        }
+        .item > *:not(:last-child) {
+          margin-right: 1rem;
+        }
+        .item .title {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+        .item .footer {
+          display: flex;
+          align-items: center;
         }
         .badge {
           color: #fff;
