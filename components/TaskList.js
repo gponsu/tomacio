@@ -42,6 +42,12 @@ function TaskList(props) {
           </div>
         </div>
       ))}
+      {tasks.length === 0 &&
+        <span>
+          <h2>Empty list!</h2>
+          <p>You have no tasks to do at this moment</p>
+        </span>
+      }
 
       <style jsx>{`
         .container {

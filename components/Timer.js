@@ -1,11 +1,6 @@
 import React from 'react';
 import useInterval from '../utils/useInterval';
-
-function format(milliseconds) {
-  if (!milliseconds) return "00:00";
-
-  return new Date(milliseconds).toISOString().substr(14, 5);
-}
+import timerFormat from '../utils/timerFormat';
 
 function Timer(props) {
 	const DELAY = 1000;
@@ -16,7 +11,7 @@ function Timer(props) {
   }, running ? DELAY : null);
 
   return (
-    <div>{format(milliseconds)}</div>
+    <div>{timerFormat(milliseconds)}</div>
   );
 }
 

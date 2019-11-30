@@ -1,15 +1,43 @@
 import React, { useState, useReducer } from 'react';
 import TaskList from "../components/TaskList";
 import Timer from "../components/Timer";
+import Statistic from "../components/Statistic";
 import pomodoroReducer from "../utils/pomodoroReducer";
 import useStoredState from "../utils/useStoredState";
 import useStoredReducer from "../utils/useStoredReducer";
 import showNotification from "../utils/showNotification";
+import timerFormat from "../utils/timerFormat";
 import uuidv4 from "uuid/v4";
 
 const Home = () => {
   const [tasks, setTasks] = useStoredState("tasks", []);
   const [pomodoro, dispatch] = useStoredReducer("pomodoro", pomodoroReducer, { count: 0 });
+
+  const data1 = [
+    {
+      "id": "Completed",
+      "label": "Completed pomodoros",
+      "value": tasks.reduce((accumulator, task) => accumulator + task.pomodoros.filter(pomodoro => pomodoro.remaining === 0 && pomodoro.finishTo >= todayStartOfDay()).length, 0)
+    },
+    {
+      "id": "Canceled",
+      "label": "Canceled pomodoros",
+      "value": tasks.reduce((accumulator, task) => accumulator + task.pomodoros.filter(pomodoro => pomodoro.remaining > 0 && pomodoro.finishTo >= todayStartOfDay()).length, 0)
+    }
+  ];
+
+  const data2 = [
+    {
+      "id": "Focused",
+      "label": "Focused time",
+      "value": tasks.reduce((accumulator, task) => accumulator + task.pomodoros.filter(pomodoro => pomodoro.remaining === 0 && pomodoro.finishTo >= todayStartOfDay()).length, 0) * 25 * 60 * 1000
+    },
+    {
+      "id": "Interrupted",
+      "label": "Time lost due to interruptions",
+      "value": tasks.reduce((accumulator, task) => accumulator + task.pomodoros.filter(pomodoro => pomodoro.finishTo >= todayStartOfDay()).reduce((acc, pomodoro) =>  { if (pomodoro.remaining > 0) { acc += (25*60*1000 - pomodoro.remaining) } return acc; } ,0), 0)
+    }
+  ];
 
   function addNewPomodoroToTask(taskId, pomodoroRemaining) {
     if (pomodoro.state === "break") return;
@@ -84,11 +112,16 @@ const Home = () => {
     ]);
   }
 
+  function todayStartOfDay() {
+    let date = new Date();
+    return date.setHours(0,0,0,0);
+  }
+
   return (
     <div className="home">
       <Timer running={pomodoro.isRunning} milliseconds={pomodoro.remaining} onTick={handleOnTick} />
 
-      <h4>¿Qué vas a hacer hoy?</h4>
+      <h4>What are you going to do today?</h4>
       <input onKeyUp={handleKeyUp} />
 
       <span className="divider" />
@@ -102,6 +135,13 @@ const Home = () => {
         onFinishTask={handleFinishTask}
       />
 
+      <span className="divider" />
+
+      <div className="statistics">
+        <Statistic donut title="Pomodoros" data={data1} />
+        <Statistic title="Time" data={data2} />
+      </div>
+
       <style jsx>{`
       .home {
         margin: 2rem auto;
@@ -114,6 +154,22 @@ const Home = () => {
         height: 1px;
         background: #ccc;
         width: 75px;
+      }
+      .statistics {
+        display: flex;
+        flex-direction: column;
+      }
+      .statistics > *:not(:last-child) {
+        margin-bottom: 1rem;
+      }
+      @media (min-width: 568px) {
+        .statistics {
+          flex-direction: row;
+        }
+        .statistics > *:not(:last-child) {
+          margin-right: 1rem;
+          margin-bottom: 0;
+        }
       }
     `}</style>
     </div>
