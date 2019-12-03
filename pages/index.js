@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import TaskList from "../components/TaskList";
 import Timer from "../components/Timer";
 import Statistic from "../components/Statistic";
@@ -7,6 +8,7 @@ import useStoredState from "../utils/useStoredState";
 import useStoredReducer from "../utils/useStoredReducer";
 import showNotification from "../utils/showNotification";
 import { pomodorosToday, timeToday } from "../utils/pomodoroStats";
+import timerFormat from '../utils/timerFormat';
 import uuidv4 from "uuid/v4";
 
 const Home = () => {
@@ -88,6 +90,14 @@ const Home = () => {
 
   return (
     <div className="home">
+      {pomodoro.remaining > 0 &&
+        <Head>
+          <title key="title">
+            Tomacio - {timerFormat(pomodoro.remaining)}
+          </title>
+        </Head>
+      }
+
       <Timer running={pomodoro.isRunning} milliseconds={pomodoro.remaining} onTick={handleOnTick} />
 
       <h4>What are you going to do today?</h4>

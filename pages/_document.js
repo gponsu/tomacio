@@ -5,6 +5,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
+          <title key="title">Tomacio</title>
           <link rel='manifest' href='/manifest.json' />
         </Head>
         <body>
