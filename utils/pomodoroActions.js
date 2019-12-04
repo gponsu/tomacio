@@ -11,7 +11,7 @@ const startBreak = pomodoro => {
   return {
     ...pomodoro,
     finishTo: Date.now() + breakTime,
-    remaining: breakTime - 1000,
+    remaining: breakTime,
     state: "break",
   };
 }
@@ -33,7 +33,7 @@ const cancel = pomodoro => ({
 
 const finish = pomodoro => {
   if(pomodoro.state !== "break")
-    startBreak(pomodoro);
+    return startBreak(pomodoro);
 
   return { ...pomodoro, state: null, isRunning: false };
 };
