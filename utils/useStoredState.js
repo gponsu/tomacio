@@ -1,25 +1,33 @@
 import { useEffect, useState } from 'react';
+import loadStorage from "../storages";
 
-const storage = {
-  getItem: (key) => {
-    try {
-      return JSON.parse(localStorage.getItem(key));
-    } catch {
-      return localStorage.getItem(key);
-    }
-  },
-  setItem: (key, value) => localStorage.setItem(key, JSON.stringify(value))
-};
+function migrateFromLocalToCloud(key) {
+  const localStorage = loadStorage("local");
+  const item = localStorage.getItem(key);
 
-function useStoredState(key, initialState) {
-  const storedState = (typeof window !== 'undefined') ? (storage.getItem(key) || initialState) : initialState;
+  if (item === null || item.length === 0) return;
 
-  const [state, setState] = useState(storedState);
+  const cloudStorage = loadStorage("cloud");
+  cloudStorage.setItem(key, item);
+}
 
-	useEffect(() => {
-    if (typeof window !== 'undefined')
-      storage.setItem(key, state);
-	}, [state, key]);
+function useStoredState(key, initialState, store = "local") {
+  const storage = loadStorage(store);
+  const [state, setState] = useState(initialState);
+
+  useEffect(() => {
+    (async () => {
+      if (store === "cloud")
+        migrateFromLocalToCloud(key);
+
+      const item = await storage.getItem(key);
+      setState(item);
+    })();
+  }, []);
+
+  useEffect(() => {
+    storage.setItem(key, state);
+  }, [state, key]);
 
   return [state, setState];
 }
