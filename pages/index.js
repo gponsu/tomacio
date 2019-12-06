@@ -22,6 +22,8 @@ const Home = () => {
       return task.uuid === taskId;
     });
 
+    if (index === -1) return;
+
     setTasks([
       ...tasks.slice(0, index),
       {...tasks[index], ...{ pomodoros: [...tasks[index].pomodoros, { uuid: pomodoro.uuid, finishTo: pomodoro.finishTo, remaining: pomodoroRemaining }] }},

@@ -1,25 +1,15 @@
 import { useEffect, useReducer } from 'react';
+import loadStorage from "../storages";
 
-const storage = {
-  getItem: (key) => {
-    try {
-      return JSON.parse(localStorage.getItem(key));
-    } catch {
-      return localStorage.getItem(key);
-    }
-  },
-  setItem: (key, value) => localStorage.setItem(key, JSON.stringify(value))
-}
-
-function useStoreReducer(key, reducer, initialState, init) {
+function useStoreReducer(key, reducer, initialState, init, store = "local") {
+  const storage = loadStorage(store);
   const storedState = (typeof window !== 'undefined') ? (storage.getItem(key) || initialState) : initialState;
 
   const [state, dispatch] = useReducer(reducer, storedState, init);
 
-	useEffect(() => {
-    if (typeof window !== 'undefined')
-		  storage.setItem(key, state);
-	}, [state, key]);
+  useEffect(() => {
+    storage.setItem(key, state);
+  }, [state, key]);
 
   return [state, dispatch];
 }

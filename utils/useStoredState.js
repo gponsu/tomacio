@@ -1,25 +1,20 @@
 import { useEffect, useState } from 'react';
+import loadStorage from "../storages";
 
-const storage = {
-  getItem: (key) => {
-    try {
-      return JSON.parse(localStorage.getItem(key));
-    } catch {
-      return localStorage.getItem(key);
-    }
-  },
-  setItem: (key, value) => localStorage.setItem(key, JSON.stringify(value))
-};
+function useStoredState(key, initialState, store = "local") {
+  const storage = loadStorage(store);
+  const [state, setState] = useState(initialState);
 
-function useStoredState(key, initialState) {
-  const storedState = (typeof window !== 'undefined') ? (storage.getItem(key) || initialState) : initialState;
+  useEffect(() => {
+    (async () => {
+      const item = await storage.getItem(key);
+      setState(item);
+    })();
+  }, []);
 
-  const [state, setState] = useState(storedState);
-
-	useEffect(() => {
-    if (typeof window !== 'undefined')
-      storage.setItem(key, state);
-	}, [state, key]);
+  useEffect(() => {
+    storage.setItem(key, state);
+  }, [state, key]);
 
   return [state, setState];
 }
