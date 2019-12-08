@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import Head from 'next/head';
 import TaskList from "../components/TaskList";
 import Timer from "../components/Timer";
@@ -10,10 +10,13 @@ import showNotification from "../utils/showNotification";
 import { pomodorosToday, timeToday } from "../utils/pomodoroStats";
 import timerFormat from '../utils/timerFormat';
 import uuidv4 from "uuid/v4";
+import { signIn, signOut } from "../utils/auth/actions";
+import AuthContext from "../utils/auth/context";
 
 const Home = () => {
-  const [tasks, setTasks] = useStoredState("tasks", []);
+  const [tasks, setTasks] = useStoredState("tasks", [], "cloud");
   const [pomodoro, dispatch] = useStoredReducer("pomodoro", pomodoroReducer, { count: 0 });
+  const { currentUser } =  useContext(AuthContext);
 
   function addNewPomodoroToTask(taskId, pomodoroRemaining) {
     if (pomodoro.state === "break") return;
@@ -92,6 +95,13 @@ const Home = () => {
 
   return (
     <div className="home">
+      <div className="header">
+        { currentUser ? (
+          <button onClick={signOut}>logout</button>
+        ) : (
+          <button onClick={signIn}>login</button>
+        )}
+      </div>
       {pomodoro.remaining > 0 &&
         <Head>
           <title key="title">
@@ -128,6 +138,11 @@ const Home = () => {
         margin: 2rem auto;
         max-width: 600px;
         text-align: center;
+      }
+      .header {
+        display: flex;
+        margin-bottom: 1rem;
+        justify-content: flex-end;
       }
       .divider {
         margin: 2rem auto;
