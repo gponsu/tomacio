@@ -8,7 +8,7 @@ function useStoredState(key, initialState, store = "local") {
   useEffect(() => {
     (async () => {
       const item = await storage.getItem(key);
-      setState(item);
+      setState(item || initialState);
     })();
   }, []);
 
